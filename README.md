@@ -1,4 +1,4 @@
-# xModal v2.0
+# xModal v1.0
 
 O xModal é uma janela de diálogo personalizada inspirada inicialmente no showModal do Delphi. 
 Ele usa nativamente javascript em sua construção.
@@ -25,12 +25,12 @@ Clone o repositório em um diretório local.
 
 Em seu html declare o css:
 ```html
-    <link rel="stylesheet" href="./xModalV2.css">
+    <link rel="stylesheet" href="./xModal.css">
 ```
 
 Para usar o xModal você deve chamá-lo em seu arquivo .js através de import.
 ```javascript
-    import xModal from './xModalV2';
+    import xModal from './xModal';
 ```
 
 <h3>Forma 2</h3>
@@ -39,7 +39,7 @@ Em seu html declare o arquivo js.
 
 ```html
     <link rel="stylesheet" href="./xModal.css">
-    <script src="./xModalV2.js"></script>
+    <script src="./xModal.js"></script>
 ```
 
 É necessário comentar/descomentar as linhas no arquivo xModal.js:
