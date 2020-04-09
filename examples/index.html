@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Modo Exemplos</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="http://tutsplus.github.io/syntax-highlighter-demos/highlighters/Prism/prism.js"></script>
+    <link href="http://tutsplus.github.io/syntax-highlighter-demos/highlighters/Prism/prism.css" rel="stylesheet"
+        type="text/css" />
+    <link rel="stylesheet" href="../xModal.css">
+    <!-- <script src="example.js" type="module"></script> -->
+    <script src="../xModal.js" type="text/javascript"></script>
+    <script src="example.js" type="text/javascript"></script>
+
+    <style>
+        #container {
+            width: 700px;
+            margin: 0 auto;
+            /*border: 1px solid*/
+        }
+
+        pre {
+            padding: 0 !important;
+            margin: 0 !important;
+            line-height: 1.1 !important;
+            margin-top: 10px !important;
+            /* background-color: #242323 !important; */
+        }
+
+        code {
+            padding: 0 !important;
+            margin: 0 !important;
+            font-family: serif !important;
+        }
+
+        pre button {
+            float: right;
+            margin-right: 20px;
+        }
+
+        .right {
+            float: right;
+        }
+
+        .left {
+            float: left;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="container">
+        <div>
+            <h3>Exemplo 1:</h3>
+            <p>Construção básica da janela de diálogo.</p>
+            <button onclick="openExemplo1()" class="left">Exemplo 1</button><br>
+
+            <div id="exemplo1">Exemplo 1</div>
+
+            <pre class=" language-javascript  language-markup" data-language="javascript">
+                    <code style="float: left;">
+                        import mofo from '../mofoV2.js'
+                        
+                        const exemplo1 = new mofo.create({
+                            el: '#exemplo1'
+                        });
+
+                        exemplo1.open();
+                    </code>
+                </pre>
+            <hr>
+        </div>
+        <div>
+            <h3>Exemplo 2:</h3>
+            <p>Definindo largura e altura.</p>
+            <button onclick="openExemplo2()" class="left">Exemplo 2</button><br>
+
+            <div id="exemplo2">Exemplo 2</div>
+
+            <pre class=" language-javascript  language-markup" data-language="javascript">
+                    <code style="float: left;">
+                        import mofo from '../mofoV2.js'
+                        
+                        const exemplo2 = new mofo.create({
+                            el: '#exemplo2',
+                            title: 'Exemplo 2',
+                            width: 400,
+                            height: 200
+                        });
+
+                        exemplo2.open();
+                    </code>
+                </pre>
+            <hr>
+        </div>
+        <div>
+            <h3>Exemplo 3:</h3>
+            <p>Definindo as posições de abertura da janela de diálogo.</p>
+            <button onclick="openExemplo3()" class="left">Exemplo 3</button><br>
+
+            <div id="exemplo3">Exemplo 3</div>
+
+            <pre class=" language-javascript  language-markup" data-language="javascript">
+                    <code style="float: left;">
+                        import mofo from '../mofoV2.js'
+                        
+                        const exemplo3 = new mofo.create({
+                            el: '#exemplo3',
+                            title: 'Exemplo 3',
+                            left: 50,
+                            top: 180
+                        });
+
+                        exemplo3.open();
+                    </code>
+                </pre>
+            <hr>
+        </div>
+        <div>
+            <h3>Exemplo 4:</h3>
+            <p>Janela de Diálogo sem o botão de fechar.</p>
+            <button onclick="openExemplo4()" class="left">Exemplo 4</button><br>
+
+            <div id="exemplo4">Exemplo 4</div>
+
+            <pre class=" language-javascript  language-markup" data-language="javascript">
+                    <code style="float: left;">
+                        import mofo from '../mofoV2.js'
+                        
+                        const exemplo4 = new mofo.create({
+                            el: '#exemplo4',
+                            title: 'Exemplo 4',
+                            closeBtn: false
+                        });
+
+                        exemplo4.open();
+                    </code>
+                </pre>
+            <hr>
+        </div>
+        <div>
+            <h3>Exemplo 5:</h3>
+            <p>Abrir janela em tela cheia.</p>
+            <button onclick="openExemplo5()" class="left">Exemplo 5</button><br>
+
+            <div id="exemplo5">Exemplo 5</div>
+
+            <pre class=" language-javascript  language-markup" data-language="javascript">
+                    <code style="float: left;">
+                        import mofo from '../mofoV2.js'
+                        
+                        const exemplo5 = new mofo.create({
+                            el: '#exemplo5',
+                            title: 'Exemplo 5',
+                            fullScreen: true
+                        });
+
+                        exemplo5.open();
+                    </code>
+                </pre>
+            <hr>
+        </div>
+        <div>
+            <h3>Exemplo 6:</h3>
+            <p>Aplicando um tema na janela, opções disponíveis:
+                'mofo-blue','mofo-dark','mofo-opacity','mofo-dark-square'</p>
+            <button onclick="openExemplo6()" class="left">Exemplo 6</button><br>
+
+            <div id="exemplo6">Exemplo 6</div>
+
+            <pre class=" language-javascript  language-markup" data-language="javascript">
+                    <code style="float: left;">
+                        import mofo from '../mofoV2.js'
+                        
+                        const exemplo6 = new mofo.create({
+                            el: '#exemplo6',
+                            title: 'Exemplo 6',
+                            theme: 'mofo-dark'
+                        });
+
+                        exemplo6.open();
+                    </code>
+                </pre>
+            <hr>
+        </div>
+        <div>
+            <h3>Exemplo 7:</h3>
+            <p>Inserindo botões na janela de diálogo.</p>
+            <button onclick="openExemplo7()" class="left">Exemplo 7</button><br>
+
+            <div id="exemplo7">Exemplo 7</div>
+
+            <pre class=" language-javascript  language-markup" data-language="javascript">
+                    <code style="float: left;">
+                        import mofo from '../mofoV2.js'
+                        
+                        const exemplo7 = new mofo.create({
+                            el: '#exemplo7',
+                            title: 'Exemplo 7',
+                            buttons: {
+                                cancelar: {
+                                    html: 'Cancelar',
+                                    class:  'left',
+                                    click: ()=>{
+                                        exemplo7.close();
+                                    }
+                                },
+                                confirmar: {
+                                    html: 'Confirmar',
+                                    class: 'right',
+                                    click: ()=>{
+                                        alert('Botão confirmar pressionado!');
+                                    }
+                                }
+                            }
+                        });
+
+                        exemplo7.open();
+                    </code>
+                </pre>
+            <hr>
+        </div>
+        <div>
+            <h3>Exemplo 8:</h3>
+            <p>Eventos ao abrir e fechar a janela.</p>
+            <button onclick="openExemplo8()" class="left">Exemplo 8</button><br>
+
+            <div id="exemplo8">Exemplo 8</div>
+
+            <pre class=" language-javascript  language-markup" data-language="javascript">
+                    <code style="float: left;">
+                        import mofo from '../mofoV2.js'
+                        
+                        const exemplo8 = new mofo.create({
+                            el: '#exemplo8',
+                            title: 'Exemplo 8',
+                            onOpen: () => {
+                                alert('Abrindo janela!');
+                            },
+                            onClose: () => {
+                                alert('Fechando janela!');
+                            }
+                        });
+
+                        exemplo8.open();
+                    </code>
+                </pre>
+            <hr>
+        </div>
+        <div>
+            <h3>Exemplo 9:</h3>
+            <p>Clicar em um botão depois de um determinado tempo.</p>
+            <button onclick="openExemplo9()" class="left">Exemplo 9</button><br>
+
+            <div id="exemplo9">Exemplo 9</div>
+
+            <pre class=" language-javascript  language-markup" data-language="javascript">
+                    <code style="float: left;">
+                        import mofo from '../mofoV2.js'
+                        
+                        const exemplo9 = new mofo.create({
+                            el: '#exemplo9',
+                            title: 'Exemplo 9',
+                            execAfter: {
+                                time: 15,
+                                btn: 'fechar'
+                            },
+                            buttons:{
+                                teste: {
+                                    html: 'teste'
+                                },
+                                fechar: {
+                                    html: 'Fechar',
+                                    click: () => {
+                                        exemplo9.close();
+                                    }
+                                }
+                            }
+                        });
+
+                        exemplo.open();
+                    </code>
+                </pre>
+            <hr>
+        </div>
+        <div>
+            <h3>Exemplo 10:</h3>
+            <p>Monitorar teclas pressionadas e executar determinada ação.</p>
+            <button onclick="openExemplo10()" class="left">Exemplo 10</button><br>
+
+            <div id="exemplo10">Exemplo 10</div>
+
+            <pre class=" language-javascript  language-markup" data-language="javascript">
+                    <code style="float: left;">
+                        import mofo from '../mofoV2.js'
+                        
+                        const exemplo10 = new mofo.create({
+                            el: '#exemplo10',
+                            title: 'Exemplo 10',
+                            onKeyDown: {
+                                '13': (e) => {alert('Enter pressionado!')},
+                                'ctrl+13': (e) => {alert('ctrl + enter pressionado!')},
+                                'ctrl+shift+13': (e) => {alert('ctrl + shift + Enter pressionado!')},
+                                'ctrl+shift+alt+13': (e) => {alert('ctrl + shift + alt + Enter pressionado!')},
+                            }
+                        });
+
+                        exemplo10.open();
+                    </code>
+                </pre>
+            <hr>
+        </div>
+    </div>
+
+</body>
+
+</html>
