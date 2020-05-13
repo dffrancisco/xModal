@@ -1,6 +1,6 @@
-// import mofo from '../mofoV2.js';
+// import xModal from '../xModalV2.js';
 
-const exemplo1 = new mofo.create({
+const exemplo1 = new xModal.create({
     el: '#exemplo1',
     resize: true,
     // resize: {
@@ -9,39 +9,39 @@ const exemplo1 = new mofo.create({
     // }
 });
 
-const exemplo2 = new mofo.create({
+const exemplo2 = new xModal.create({
     el: '#exemplo2',
     title: 'Exemplo 2',
     width: 400,
     height: 200
 });
 
-const exemplo3 = new mofo.create({
+const exemplo3 = new xModal.create({
     el: '#exemplo3',
     title: 'Exemplo 3',
     left: 80,
     top: 500
 });
 
-const exemplo4 = new mofo.create({
+const exemplo4 = new xModal.create({
     el: '#exemplo4',
     title: 'Exemplo 4',
     closeBtn: false
 });
 
-const exemplo5 = new mofo.create({
+const exemplo5 = new xModal.create({
     el: '#exemplo5',
     title: 'Exemplo 5',
     fullScreen: true
 });
 
-const exemplo6 = new mofo.create({
+const exemplo6 = new xModal.create({
     el: '#exemplo6',
     title: 'Exemplo 6',
-    theme: 'mofo-dark'
+    theme: 'xModal-dark'
 });
 
-const exemplo7 = new mofo.create({
+const exemplo7 = new xModal.create({
     el: '#exemplo7',
     title: 'Exemplo 7',
     buttons: {
@@ -54,7 +54,7 @@ const exemplo7 = new mofo.create({
         },
         confirmar: {
             html: 'Confirmar',
-            class: 'right',
+            class: 'right myClass',
             click: () => {
                 alert('Botão confirmar pressionado!');
             }
@@ -62,7 +62,7 @@ const exemplo7 = new mofo.create({
     }
 });
 
-const exemplo8 = new mofo.create({
+const exemplo8 = new xModal.create({
     el: '#exemplo8',
     title: 'Exemplo 8',
     onOpen: () => {
@@ -73,7 +73,7 @@ const exemplo8 = new mofo.create({
     }
 });
 
-const exemplo9 = new mofo.create({
+const exemplo9 = new xModal.create({
     el: '#exemplo9',
     title: 'Exemplo 9',
     execAfter: {
@@ -94,7 +94,7 @@ const exemplo9 = new mofo.create({
     }
 });
 
-const exemplo10 = new mofo.create({
+const exemplo10 = new xModal.create({
     el: '#exemplo10',
     title: 'Exemplo 10',
     onKeyDown: {

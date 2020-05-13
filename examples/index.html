@@ -11,8 +11,7 @@
         type="text/css" />
     <link rel="stylesheet" href="../xModal.css">
     <!-- <script src="example.js" type="module"></script> -->
-    <script src="../xModal.js" type="text/javascript"></script>
-    <script src="example.js" type="text/javascript"></script>
+
 
     <style>
         #container {
@@ -47,6 +46,10 @@
         .left {
             float: left;
         }
+
+        .myClass {
+            border: 2px solid red !important;
+        }
     </style>
 
 </head>
@@ -62,9 +65,9 @@
 
             <pre class=" language-javascript  language-markup" data-language="javascript">
                     <code style="float: left;">
-                        import mofo from '../mofoV2.js'
+                        import xModal from '../xModal.js'
                         
-                        const exemplo1 = new mofo.create({
+                        const exemplo1 = new xModal.create({
                             el: '#exemplo1'
                         });
 
@@ -82,9 +85,9 @@
 
             <pre class=" language-javascript  language-markup" data-language="javascript">
                     <code style="float: left;">
-                        import mofo from '../mofoV2.js'
+                        import xModal from '../xModal.js'
                         
-                        const exemplo2 = new mofo.create({
+                        const exemplo2 = new xModal.create({
                             el: '#exemplo2',
                             title: 'Exemplo 2',
                             width: 400,
@@ -105,9 +108,9 @@
 
             <pre class=" language-javascript  language-markup" data-language="javascript">
                     <code style="float: left;">
-                        import mofo from '../mofoV2.js'
+                        import xModal from '../xModal.js'
                         
-                        const exemplo3 = new mofo.create({
+                        const exemplo3 = new xModal.create({
                             el: '#exemplo3',
                             title: 'Exemplo 3',
                             left: 50,
@@ -128,9 +131,9 @@
 
             <pre class=" language-javascript  language-markup" data-language="javascript">
                     <code style="float: left;">
-                        import mofo from '../mofoV2.js'
+                        import xModal from '../xModal.js'
                         
-                        const exemplo4 = new mofo.create({
+                        const exemplo4 = new xModal.create({
                             el: '#exemplo4',
                             title: 'Exemplo 4',
                             closeBtn: false
@@ -150,9 +153,9 @@
 
             <pre class=" language-javascript  language-markup" data-language="javascript">
                     <code style="float: left;">
-                        import mofo from '../mofoV2.js'
+                        import xModal from '../xModal.js'
                         
-                        const exemplo5 = new mofo.create({
+                        const exemplo5 = new xModal.create({
                             el: '#exemplo5',
                             title: 'Exemplo 5',
                             fullScreen: true
@@ -166,19 +169,19 @@
         <div>
             <h3>Exemplo 6:</h3>
             <p>Aplicando um tema na janela, opções disponíveis:
-                'mofo-blue','mofo-dark','mofo-opacity','mofo-dark-square'</p>
+                'xModal-blue','xModal-dark','xModal-opacity','xModal-dark-square'</p>
             <button onclick="openExemplo6()" class="left">Exemplo 6</button><br>
 
             <div id="exemplo6">Exemplo 6</div>
 
             <pre class=" language-javascript  language-markup" data-language="javascript">
                     <code style="float: left;">
-                        import mofo from '../mofoV2.js'
+                        import xModal from '../xModal.js'
                         
-                        const exemplo6 = new mofo.create({
+                        const exemplo6 = new xModal.create({
                             el: '#exemplo6',
                             title: 'Exemplo 6',
-                            theme: 'mofo-dark'
+                            theme: 'xModal-dark'
                         });
 
                         exemplo6.open();
@@ -195,9 +198,9 @@
 
             <pre class=" language-javascript  language-markup" data-language="javascript">
                     <code style="float: left;">
-                        import mofo from '../mofoV2.js'
+                        import xModal from '../xModal.js'
                         
-                        const exemplo7 = new mofo.create({
+                        const exemplo7 = new xModal.create({
                             el: '#exemplo7',
                             title: 'Exemplo 7',
                             buttons: {
@@ -232,9 +235,9 @@
 
             <pre class=" language-javascript  language-markup" data-language="javascript">
                     <code style="float: left;">
-                        import mofo from '../mofoV2.js'
+                        import xModal from '../xModal.js'
                         
-                        const exemplo8 = new mofo.create({
+                        const exemplo8 = new xModal.create({
                             el: '#exemplo8',
                             title: 'Exemplo 8',
                             onOpen: () => {
@@ -259,9 +262,9 @@
 
             <pre class=" language-javascript  language-markup" data-language="javascript">
                     <code style="float: left;">
-                        import mofo from '../mofoV2.js'
+                        import xModal from '../xModal.js'
                         
-                        const exemplo9 = new mofo.create({
+                        const exemplo9 = new xModal.create({
                             el: '#exemplo9',
                             title: 'Exemplo 9',
                             execAfter: {
@@ -295,9 +298,9 @@
 
             <pre class=" language-javascript  language-markup" data-language="javascript">
                     <code style="float: left;">
-                        import mofo from '../mofoV2.js'
+                        import xModal from '../xModal.js'
                         
-                        const exemplo10 = new mofo.create({
+                        const exemplo10 = new xModal.create({
                             el: '#exemplo10',
                             title: 'Exemplo 10',
                             onKeyDown: {
@@ -315,6 +318,8 @@
         </div>
     </div>
 
+    <script src="../xModal.js" type="text/javascript"></script>
+    <script src="example.js" type="text/javascript"></script>
 </body>
 
 </html>

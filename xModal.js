@@ -11,9 +11,11 @@ let xModal = (function () {
         'xModal-blue': 1,
         'xModal-dark': 2,
         'xModal-opacity': 3,
-        'xModal-dark-square': 4
+        'xModal-dark-square': 4,
+        'xModal-bublue': 5
     }
 
+    let defaultTheme = 'xModal-bublue'
 
     function setCss(path) {
         path = path == undefined ? './xModal.css' : `${path}xModal.css`
@@ -207,19 +209,11 @@ let xModal = (function () {
         if (params.el[0] !== '#' && params.el[0] !== '.')
             throw "The el property must start with '#' or '.'"
 
-        Object.keys(params).map(param => {
-            if (argDefault[param] === undefined)
-                throw "The property " + param + " not is a valid property.";
-        })
-
         if (params.width && isNaN(params.width))
             throw "The property width is not a number."
 
         if (params.height && isNaN(params.height))
             throw "The property height is not a number."
-
-        // if (params.resize && params.resize !== true && params.resize !== false)
-        //     throw "The property resize is not a boolean."
 
         if (params.theme && themes[params.theme] === undefined)
             throw "The theme selected is not a theme valid. " +
@@ -314,7 +308,7 @@ let xModal = (function () {
             onOpen: false,
             resize: false,
             onCreate: false,
-            theme: "xModal-blue",
+            // theme: "xModal-blue",
             width: (window.innerWidth - window.innerWidth * 25 / 100),
             height: (window.innerHeight - window.innerHeight * 25 / 100),
             left: 0,
@@ -327,6 +321,8 @@ let xModal = (function () {
             modal: true,
             titleDisplay: true,
             onKeyDown: {},
+            top: '',
+            left: ''
             // classForOpen: false,
             // classForClose: false,
         };
@@ -357,11 +353,21 @@ let xModal = (function () {
 
                 this.main = document.createElement("div")
                 this.main.classList.add('xModal-modal-main')
-                this.main.classList.add(arg.theme);
+
+                this.main.classList.add(arg.theme ? arg.theme : defaultTheme);
+
                 this.main.setAttribute('id', id)
                 this.main.setAttribute('modal', arg.modal)
-                this.main.style.left = `calc(50% - ${arg.width / 2}px)`
-                this.main.style.top = `calc(50% - ${arg.height / 2}px)`
+                if (arg.top.toString() != '')
+                    this.main.style.top = `${arg.top}px`
+                else
+                    this.main.style.top = `calc(50% - ${arg.height / 2}px)`
+
+                if (arg.left.toString() != '')
+                    this.main.style.left = `${arg.left}px`
+                else
+                    this.main.style.left = `calc(50% - ${arg.width / 2}px)`
+
                 this.main.style.height = `${arg.height}px`;
                 this.main.style.width = `${arg.width}px`;
                 this.main.style.display = 'none';
@@ -407,8 +413,12 @@ let xModal = (function () {
                 for (let i in buttons) {
                     let btn = document.createElement('button')
                     btn.innerHTML = buttons[i].html
-                    if (buttons[i].class)
-                        btn.classList.add(buttons[i].class)
+                    if (buttons[i].class) {
+                        let _class = buttons[i].class.split(' ')
+                        for (let i in _class)
+                            btn.classList.add(_class[i])
+                        // btn.classList.add(buttons[i].class)
+                    }
                     btn.classList.add("xModal-button-new")
                     btn.addEventListener('click', buttons[i].click)
 
@@ -440,26 +450,34 @@ let xModal = (function () {
                 //     arg.classForOpen.map(ln => this.element.classList.remove(ln))
                 //     arg.classForClose.map(ln => this.element.classList.add(ln))
                 // } else
-                this.element.style.display = 'none'
+                this.main.classList.add('this-close')
+                setTimeout(() => {
+                    this.element.style.display = 'none'
+                    this.main.classList.remove('this-close')
 
 
-                if (arg.modal)
-                    document.getElementById(this.idElement + '_Modal').remove()
+                    if (arg.modal)
+                        document.getElementById(this.idElement + '_Modal').remove()
 
 
-                if (this.eventoClose[id])
-                    this.eventoClose[id]()
+                    if (this.eventoClose[id])
+                        this.eventoClose[id]()
 
-                if (dialogs.execAfter[id])
-                    execAfterStop(id);
+                    if (dialogs.execAfter[id])
+                        execAfterStop(id);
 
-                delete dialogs.dialogsOpen[id];
-                if (Object.keys(dialogs.dialogsOpen).length === 0) {
-                    document.body.style.overflow = 'auto'
-                }
-
+                    delete dialogs.dialogsOpen[id];
+                    if (Object.keys(dialogs.dialogsOpen).length === 0) {
+                        document.body.style.overflow = 'auto'
+                    }
+                }, 100);
             },
             onOpen() {
+                this.main.classList.add('this-open')
+                setTimeout(() => {
+                    this.main.classList.remove('this-open')
+                }, 100);
+
                 if (!(this.idElement in dialogs.dialogsOpen)) {
                     dialogs.dialogsOpen[this.idElement] = { id: this.idElement }
 
@@ -472,7 +490,7 @@ let xModal = (function () {
                     if (arg.modal) {
                         let overlay = document.createElement("div")
                         overlay.classList.add('xModal-widget-overlay')
-                        overlay.classList.add(arg.theme)
+                        overlay.classList.add(arg.theme ? arg.theme : defaultTheme)
                         overlay.style.zIndex = zindex
                         overlay.setAttribute('id', this.idElement + '_Modal')
                         document.body.appendChild(overlay)
@@ -520,17 +538,12 @@ let xModal = (function () {
                 if (arg.modal) {
                     document.getElementById(this.idElement + '_Modal').remove()
                     document.body.style.overflow = 'auto'
-
                 }
             },
             resize(topLeft, topRight, buttonLeft, buttonRight) {
 
-
-                console.log(topLeft, topRight, buttonLeft, buttonRight);
-
                 const conteinerDiv = document.createElement('div')
 
-                // let constCss = 'width: 10px;height: 10px;border-radius: 50%;background: white;border: 3px solid #4286f4;position: absolute;'
                 let constCss = ''
 
                 if (topLeft == true || topLeft == undefined) {
@@ -598,8 +611,7 @@ let xModal = (function () {
                             const height = original_height + (e.pageY - original_mouse_y)
                             if (width > minimum_size) ax.element.style.width = width + 'px'
                             if (height > minimum_size) ax.element.style.height = height + 'px'
-                        }
-                        else
+                        } else
                             if (resizers[i].classList.contains('bottom-left')) {
                                 const height = original_height + (e.pageY - original_mouse_y)
                                 const width = original_width - (e.pageX - original_mouse_x)
@@ -608,8 +620,7 @@ let xModal = (function () {
                                     ax.element.style.width = width + 'px'
                                     ax.element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
                                 }
-                            }
-                            else
+                            } else
                                 if (resizers[i].classList.contains('top-right')) {
                                     const width = original_width + (e.pageX - original_mouse_x)
                                     const height = original_height - (e.pageY - original_mouse_y)
@@ -618,8 +629,7 @@ let xModal = (function () {
                                         ax.element.style.height = height + 'px'
                                         ax.element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
                                     }
-                                }
-                                else {
+                                } else {
                                     const width = original_width - (e.pageX - original_mouse_x)
                                     const height = original_height - (e.pageY - original_mouse_y)
                                     if (width > minimum_size) {
@@ -707,10 +717,25 @@ let xModal = (function () {
         dragEl(ax.element);
     }
 
+    function setTheme(newTheme) {
+        defaultTheme = newTheme
+    }
+
+    function changeTheme(_theme) {
+        defaultTheme = _theme;
+        let el = [...document.querySelectorAll('.xModal-modal-main')];
+        for (let i in el) {
+            el[i].classList = 'xModal-modal-main';
+            el[i].classList.add(_theme);
+        }
+    }
+
     return {
         create: create,
         dialogs: dialogs,
         countIsOpen: countIsOpen,
-        setCss: setCss
+        setCss: setCss,
+        setTheme: setTheme,
+        changeTheme: changeTheme
     }
 })()

@@ -1,6 +1,6 @@
 # xModal v1.0
 
-O xModal é uma janela de diálogo personalizada inspirada inicialmente no showModal do Delphi. 
+O xModal é uma janela de diálogo personalizada inspirada inicialmente no showModal do Delphi.
 Ele usa nativamente javascript em sua construção.
 
 [Instalação](#instalação)<br>
@@ -24,13 +24,15 @@ Clone o repositório em um diretório local.
 <h3>Forma 1</h3>
 
 Em seu html declare o css:
+
 ```html
-    <link rel="stylesheet" href="./xModal.css">
+<link rel="stylesheet" href="./xModal.css" />
 ```
 
 Para usar o xModal você deve chamá-lo em seu arquivo .js através de import.
+
 ```javascript
-    import xModal from './xModal';
+import xModal from './xModal';
 ```
 
 <h3>Forma 2</h3>
@@ -38,8 +40,8 @@ Para usar o xModal você deve chamá-lo em seu arquivo .js através de import.
 Em seu html declare o arquivo js.
 
 ```html
-    <link rel="stylesheet" href="./xModal.css">
-    <script src="./xModal.js"></script>
+<link rel="stylesheet" href="./xModal.css" />
+<script src="./xModal.js"></script>
 ```
 
 É necessário comentar/descomentar as linhas no arquivo xModal.js:
@@ -52,29 +54,31 @@ Em seu html declare o arquivo js.
 ## Modo de Uso
 
 É necessário uma div no seu html com um id
+
 ```html
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-        <title>Mofo v2.0</title>
-    </head>
-    <body>
-        <div id="minhaDiv">Hello World!</div>
-        <script src="index.js" type="module"></script>
-    </body>
-    </html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <title>xModal v1.0</title>
+  </head>
+  <body>
+    <div id="minhaDiv">Hello World!</div>
+    <script src="index.js" type="module"></script>
+  </body>
+</html>
 ```
+
 No javascript iremos instanciar o objeto da seguinte forma:
 
 <h3>Create</h3>
 
 ```javascript
-    const minhaDiv = new xModal.create({
-        el: '#minhaDiv'
-    })
+const minhaDiv = new xModal.create({
+  el: '#minhaDiv',
+});
 
-    //// Abre o modal
-    minhaDiv.open();
+//// Abre o modal
+minhaDiv.open();
 ```
 
 ## Temas
@@ -85,12 +89,14 @@ No javascript iremos instanciar o objeto da seguinte forma:
         <th>xModal-opacity</th>
         <th>xModal-dark</th>
         <th>xModal-dark-square</th>
+        <th>xModal-bublue</th>
     </tr>
     <tr>
         <td><img src="images/xModal.png"></td>
         <td><img src="images/xModal-opacity.png"></td>
         <td><img src="images/xModal-dark.png"></td>
         <td><img src="images/xModal-dark-square.png"></td>
+        <td><img src="images/xModal-bublue.png"></td>
     </tr>
 </table>
 
@@ -203,6 +209,22 @@ Create é responsável por instanciar o xModal. Recebe um objeto como parâmetro
         <td align="center"></td>
     </tr>
     <tr>
+        <td>setTheme</td>
+        <td>Função que seta o thema para novas intancias.
+            xModal.setTheme('xModal-dark-square')
+        </td>
+        <td align="center">string</td>
+        <td align="center">xModal-bublue</td>
+    </tr>
+    <tr>
+        <td>changeTheme</td>
+        <td>Função que altera todas as intancias corrente e seta o thema para a futuras intancias.
+            xModal.changeTheme('xModal-dark-square')
+        </td>
+        <td align="center">string</td>
+        <td align="center"></td>
+    </tr>
+    <tr>
         <td>onKeyDown</td>
         <td>Permite a janela escutar pressionamento de teclas e executar uma função para as teclas determinadas.<pre>
 onKeyDown:{
@@ -247,10 +269,11 @@ buttons:{
 </table>
 
 ## Métodos
-    
+
 Esses métodos serão utilizados na variável instanciada. Ex.:<br>
+
 ```javascript
-    minhaDiv.close();
+minhaDiv.close();
 ```
 
 <table>
