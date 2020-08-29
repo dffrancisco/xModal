@@ -1,4 +1,4 @@
-# xModal v1.0
+# xModal v2.0.0
 
 O xModal é uma janela de diálogo personalizada inspirada inicialmente no showModal do Delphi.
 Ele usa nativamente javascript em sua construção.
@@ -13,11 +13,6 @@ Ele usa nativamente javascript em sua construção.
 
 ## Instalação
 
-Clone o repositório em um diretório local.
-
-```sh
-    git clone https://github.com/dffrancisco/xModal
-```
 
 ## Importando
 

@@ -1,4 +1,4 @@
-// export default (function () {
+//export default (function () {
 
 let xModal = (function () {
     const btnProperty = {
@@ -12,7 +12,8 @@ let xModal = (function () {
         'xModal-dark': 2,
         'xModal-opacity': 3,
         'xModal-dark-square': 4,
-        'xModal-bublue': 5
+        'xModal-bublue': 5,
+        "xModal-dark-mobile": 6,
     }
 
     let defaultTheme = 'xModal-bublue'
@@ -86,7 +87,7 @@ let xModal = (function () {
 
                         delete dialogs.dialogsOpen[id];
                         if (Object.keys(dialogs.dialogsOpen).length === 0) {
-                            document.body.style.overflow = 'auto'
+                            document.body.style.overflow = ''
                         }
                     }
                     return false;
@@ -147,8 +148,12 @@ let xModal = (function () {
             offset = {
                 x: e.pageX - elem.offsetLeft,
                 y: e.pageY - elem.offsetTop,
-                w: window.innerWidth - (outer.width),
-                h: window.innerHeight - (outer.height)
+                // w: window.innerWidth ,
+                // h: window.innerHeight
+                w: window.innerWidth - (outer.width / 2),
+                h: window.innerHeight - (outer.height / 2),
+                width: (outer.width / 2),
+                height: (outer.height / 2)
             };
 
             document.addEventListener('mouseup', mouseUp)
@@ -160,10 +165,13 @@ let xModal = (function () {
             let top = e.pageY - offset.y;
             let left = e.pageX - offset.x;
 
+            // console.log(offset.h, top, e.pageY, offset.y);
+
             if (offset.h > top)
-                elem.style.top = top > 0 ? `${top}px` : 0
+                elem.style.top = top - offset.height > 0 ? `${top}px` : offset.height
+
             if (offset.w > left)
-                elem.style.left = left > 0 ? `${left}px` : 0
+                elem.style.left = left - offset.width > 0 ? `${left}px` : offset.width
         }
 
         function mouseUp() {
@@ -184,14 +192,16 @@ let xModal = (function () {
 
         function touchmove(e) {
             let outer = outerElent(elem)
-            let ww = window.innerWidth - (outer.width)
-            let hh = window.innerHeight - (outer.height)
+            let ww = window.innerWidth - (outer.width / 2)
+            let hh = window.innerHeight - (outer.height / 2)
+            let width = (outer.width / 2)
+            let height = (outer.height / 2)
             let top = e.changedTouches[0].pageY - offset.y;
             let left = (e.changedTouches[0].pageX - offset.x);
             if (hh > top)
-                elem.style.top = top > 0 ? `${top}px` : 0
+                elem.style.top = top - height > 0 ? `${top}px` : height
             if (ww > left)
-                elem.style.left = left > 0 ? `${left}px` : 0
+                elem.style.left = left - width > 0 ? `${left}px` : width
         }
 
         function touchend() {
@@ -308,11 +318,9 @@ let xModal = (function () {
             onOpen: false,
             resize: false,
             onCreate: false,
-            // theme: "xModal-blue",
+            // // theme: "xModal-blue",
             width: (window.innerWidth - window.innerWidth * 25 / 100),
             height: (window.innerHeight - window.innerHeight * 25 / 100),
-            left: 0,
-            top: 0,
             fullScreen: false,
             closeBtn: true,
             hash: false,
@@ -356,17 +364,26 @@ let xModal = (function () {
 
                 this.main.classList.add(arg.theme ? arg.theme : defaultTheme);
 
+                this.main.classList.add(id + '_Modal')
+
                 this.main.setAttribute('id', id)
                 this.main.setAttribute('modal', arg.modal)
-                if (arg.top.toString() != '')
-                    this.main.style.top = `${arg.top}px`
-                else
-                    this.main.style.top = `calc(50% - ${arg.height / 2}px)`
 
-                if (arg.left.toString() != '')
-                    this.main.style.left = `${arg.left}px`
-                else
-                    this.main.style.left = `calc(50% - ${arg.width / 2}px)`
+
+                // if (arg.top.toString() != '')
+                //     this.main.style.top = `${arg.top}px`
+                // else
+                //     this.main.style.top = `calc(50% - ${arg.height / 2}px)`
+
+                // if (arg.left.toString() != '')
+                //     this.main.style.left = `${arg.left}px`
+                // else
+                //     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+                //         this.main.style.left = `calc(50% - ${arg.width / 2 - 195}px)`
+                //     else
+                //         this.main.style.left = `calc(50% - ${arg.width / 2}px)`
+
+
 
                 this.main.style.height = `${arg.height}px`;
                 this.main.style.width = `${arg.width}px`;
@@ -468,7 +485,7 @@ let xModal = (function () {
 
                     delete dialogs.dialogsOpen[id];
                     if (Object.keys(dialogs.dialogsOpen).length === 0) {
-                        document.body.style.overflow = 'auto'
+                        document.body.style.overflow = ''
                     }
                 }, 100);
             },
@@ -535,10 +552,13 @@ let xModal = (function () {
                 this.element.querySelector('.xModal-modal-head').remove()
                 this.element.querySelector('.xModal-modal-foot').remove()
                 this.element.querySelector('.xModal-modal-content').removeAttribute('class')
-                if (arg.modal) {
-                    document.getElementById(this.idElement + '_Modal').remove()
-                    document.body.style.overflow = 'auto'
-                }
+                // if (arg.modal) {
+                //     // console.log(this.idElement);
+                //     //  document.getElementById(this.idElement + '_Modal').remove()
+                //     //  this.element.remove()
+                //     document.body.style.overflow = ''
+
+                // }
             },
             resize(topLeft, topRight, buttonLeft, buttonRight) {
 
@@ -605,7 +625,7 @@ let xModal = (function () {
                         window.addEventListener('mouseup', stopResize)
                     })
 
-                    function resize(e) {
+                    let resize = (e) => {
                         if (resizers[i].classList.contains('bottom-right')) {
                             const width = original_width + (e.pageX - original_mouse_x)
                             const height = original_height + (e.pageY - original_mouse_y)
@@ -643,7 +663,7 @@ let xModal = (function () {
                                 }
                     }
 
-                    function stopResize() {
+                    let stopResize = () => {
                         window.removeEventListener('mousemove', resize)
                     }
                 }
@@ -717,10 +737,6 @@ let xModal = (function () {
         dragEl(ax.element);
     }
 
-    function setTheme(newTheme) {
-        defaultTheme = newTheme
-    }
-
     function changeTheme(_theme) {
         defaultTheme = _theme;
         let el = [...document.querySelectorAll('.xModal-modal-main')];
@@ -730,12 +746,23 @@ let xModal = (function () {
         }
     }
 
+    function setBlur() {
+        let el = [...document.querySelectorAll('.xModal-modal-main')];
+        for (let i in el) {
+            el[i].classList.add('blueMain');
+            el[i].querySelector('.xModal-modal-head').classList.add('blurTitle')
+            el[i].querySelector('.xModal-modal-content').classList.add('blurContent')
+        }
+        [...document.querySelector('.xModal-widget-overlay').classList.add('blurOverlay')]
+    }
+
     return {
         create: create,
         dialogs: dialogs,
         countIsOpen: countIsOpen,
         setCss: setCss,
-        setTheme: setTheme,
-        changeTheme: changeTheme
+        setTheme: (_theme) => { defaultTheme = _theme },
+        changeTheme: changeTheme,
+        setBlur: setBlur
     }
 })()

@@ -3,6 +3,9 @@
 const exemplo1 = new xModal.create({
     el: '#exemplo1',
     resize: true,
+    onClose:()=>{
+        console.log('aui');
+    }
     // resize: {
     //     topLeft: true,
     //     buttonRight: true
