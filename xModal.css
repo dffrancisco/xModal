@@ -4,6 +4,9 @@
   max-width: calc(100% - 8px);
   height: calc(100% - 100px);
   width: calc(100% - 100px);
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top:50%;
   display: flex;
   flex-direction: column;
 }
@@ -114,7 +117,7 @@
   padding: 0.2em;
   /*outline: 0;*/
   border: 1px solid #aaaaaa;
-  background: #f3f3f3 url('images/xModal-bg-content.png') 50% 50% repeat;
+  background: #f3f3f3 url("images/xModal-bg-content.png") 50% 50% repeat;
   color: #222222;
   border-radius: 4px;
 }
@@ -487,7 +490,7 @@
 }
 
 .xModal-dark-square.xModal-widget-overlay {
-  background: #aaaaaa url('images/xModal-bg-modal.png') 50% 50% repeat;
+  background: #aaaaaa url("images/xModal-bg-modal.png") 50% 50% repeat;
   opacity: 0.4;
   filter: Alpha(Opacity=40);
   /* support: IE8 */
@@ -500,7 +503,7 @@
   /* padding: 0.2em; */
   /* outline: 0; */
   /* border: 1px solid #aaaaaa; */
-  background: #f3f3f3 url(images/xModal-bg-content.png) 50% 50% repeat;
+  /* background: #f3f3f3 url(images/xModal-bg-content.png) 50% 50% repeat; */
   color: #222222;
   border-radius: 8px;
 }
@@ -577,17 +580,18 @@
 
 .xModal-bublue .xModal-modal-foot {
   text-align: right;
-  padding: 1em 1em 0.5em;
+  padding: 0.8em 1em 1em;
   border-top: 1px solid #c5c5c5;
-  max-height: 55px;
-  height: 38px;
+  max-height: 72px;
+  height: 63px;
   background-color: #fff;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
 
 .xModal-bublue.xModal-widget-overlay {
-  background: #aaaaaa url('images/xModal-bg-modal.png') 50% 50% repeat;
+  background: #aaaaaa url("images/xModal-bg-modal.png") 50% 50% repeat;
+  /* backdrop-filter: blur(10px); */
   opacity: 0.4;
   filter: Alpha(Opacity=40);
   /* support: IE8 */
@@ -601,6 +605,7 @@
   left: calc(50% - 400px) !important;
   opacity: 0.5;
 }
+
 .this-close {
   transition: all 0.2s ease;
   top: -100px !important;
@@ -608,4 +613,20 @@
   width: 800px !important;
   left: calc(50% - 400px) !important;
   opacity: 0.5;
+}
+
+.blueMain {
+  background: none !important;
+}
+
+.blurTitle {
+  backdrop-filter: blur(10px) !important;
+  background: #0a4a6dbf !important;
+}
+.blurContent {
+  backdrop-filter: blur(10px) !important;
+  background: rgba(255, 255, 255, 0.79) !important;
+}
+.blurOverlay {
+  opacity: 0.05 !important;
 }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="btn-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='../xModal.css' rel="stylesheet">
+    <script src="../xModal.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="exemplo1">Exemplo 1</div>
+    <button onclick="openExemplo1()" class="left">Exemplo 1</button><br>
+
+    <script>
+    const exemplo1 = new xModal.create({
+    el: '#exemplo1',
+    width: 400,
+    height: 200,
+    onClose:()=>{
+        console.log('aui');
+    }
+    // resize: {
+    //     topLeft: true,
+    //     buttonRight: true
+    // }
+});
+
+function openExemplo1() {
+    exemplo1.open();
+}
+    </script>
+    
+</body>
+</html>
