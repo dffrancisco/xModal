@@ -1,6 +1,6 @@
-//export default (function () {
+export default (function () {
 
-let xModal = (function () {
+//let xModal = (function () {
     const btnProperty = {
         html: 'text button',
         class: 'class button',
