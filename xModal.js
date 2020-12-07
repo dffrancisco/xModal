@@ -1,6 +1,7 @@
 export default (function () {
 
 //let xModal = (function () {
+
     const btnProperty = {
         html: 'text button',
         class: 'class button',
@@ -125,13 +126,13 @@ export default (function () {
             let s = window.getComputedStyle(el);
             let outer = {
                 width: el.clientWidth +
-                    parseInt(s.getPropertyValue('margin-left')) +
-                    parseInt(s.getPropertyValue('margin-right')) +
-                    parseInt(s.getPropertyValue('border-left')) +
-                    parseInt(s.getPropertyValue('border-right')),
+                        parseInt(s.getPropertyValue('margin-left')) +
+                        parseInt(s.getPropertyValue('margin-right')) +
+                        parseInt(s.getPropertyValue('border-left')) +
+                        parseInt(s.getPropertyValue('border-right')),
                 height: el.offsetHeight +
-                    parseInt(s.getPropertyValue('margin-bottom')) +
-                    parseInt(s.getPropertyValue('margin-top'))
+                        parseInt(s.getPropertyValue('margin-bottom')) +
+                        parseInt(s.getPropertyValue('margin-top'))
             }
             return outer
         }
@@ -165,7 +166,7 @@ export default (function () {
             let top = e.pageY - offset.y;
             let left = e.pageX - offset.x;
 
-            // console.log(offset.h, top, e.pageY, offset.y);
+//             console.log(offset.h, top, e.pageY, offset.y);
 
             if (offset.h > top)
                 elem.style.top = top - offset.height > 0 ? `${top}px` : offset.height
@@ -227,7 +228,7 @@ export default (function () {
 
         if (params.theme && themes[params.theme] === undefined)
             throw "The theme selected is not a theme valid. " +
-            "Valid values (xModal-blue, xModal-dark, xModal-opacity, xModal-dark-square)";
+                    "Valid values (xModal-blue, xModal-dark, xModal-opacity, xModal-dark-square)";
 
         if (params.left && isNaN(params.left))
             throw "The property left is not a number."
@@ -331,8 +332,8 @@ export default (function () {
             onKeyDown: {},
             top: '',
             left: ''
-            // classForOpen: false,
-            // classForClose: false,
+                    // classForOpen: false,
+                    // classForClose: false,
         };
 
         validarParams(argDefault, params);
@@ -370,13 +371,16 @@ export default (function () {
                 this.main.setAttribute('modal', arg.modal)
 
 
-                // if (arg.top.toString() != '')
-                //     this.main.style.top = `${arg.top}px`
+                if (arg.top.toString() != '')
+                    this.main.style.top = `${(arg.height / 2 - 4) + arg.top}px`
+//                    this.main.style.top = `${arg.top}px`
                 // else
                 //     this.main.style.top = `calc(50% - ${arg.height / 2}px)`
-
-                // if (arg.left.toString() != '')
-                //     this.main.style.left = `${arg.left}px`
+                if (arg.left.toString() != '')
+                    this.main.style.left = `${(arg.width / 2) + arg.left}px`
+//                    this.main.style.left = `${arg.left}px`
+//                 if (arg.left.toString() != '' )
+//                this.main.style.transform = `none`
                 // else
                 //     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
                 //         this.main.style.left = `calc(50% - ${arg.width / 2 - 195}px)`
@@ -496,7 +500,7 @@ export default (function () {
                 }, 100);
 
                 if (!(this.idElement in dialogs.dialogsOpen)) {
-                    dialogs.dialogsOpen[this.idElement] = { id: this.idElement }
+                    dialogs.dialogsOpen[this.idElement] = {id: this.idElement}
 
                     var zindex = Object.keys(dialogs.dialogsOpen).length + 998
                     this.element.style.zIndex = zindex + 1
@@ -536,6 +540,7 @@ export default (function () {
                 this.element.style.borderRadius = 0
                 this.element.style.maxHeight = 'none'
                 this.element.style.maxWidth = 'none'
+                this.element.style.transform = 'none'
             },
             destroy() {
 
@@ -629,38 +634,42 @@ export default (function () {
                         if (resizers[i].classList.contains('bottom-right')) {
                             const width = original_width + (e.pageX - original_mouse_x)
                             const height = original_height + (e.pageY - original_mouse_y)
-                            if (width > minimum_size) ax.element.style.width = width + 'px'
-                            if (height > minimum_size) ax.element.style.height = height + 'px'
+                            if (width > minimum_size)
+                                ax.element.style.width = width + 'px'
+                            if (height > minimum_size)
+                                ax.element.style.height = height + 'px'
                         } else
-                            if (resizers[i].classList.contains('bottom-left')) {
-                                const height = original_height + (e.pageY - original_mouse_y)
-                                const width = original_width - (e.pageX - original_mouse_x)
-                                if (height > minimum_size) ax.element.style.height = height + 'px'
-                                if (width > minimum_size) {
-                                    ax.element.style.width = width + 'px'
-                                    ax.element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
-                                }
-                            } else
-                                if (resizers[i].classList.contains('top-right')) {
-                                    const width = original_width + (e.pageX - original_mouse_x)
-                                    const height = original_height - (e.pageY - original_mouse_y)
-                                    if (width > minimum_size) ax.element.style.width = width + 'px'
-                                    if (height > minimum_size) {
-                                        ax.element.style.height = height + 'px'
-                                        ax.element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
-                                    }
-                                } else {
-                                    const width = original_width - (e.pageX - original_mouse_x)
-                                    const height = original_height - (e.pageY - original_mouse_y)
-                                    if (width > minimum_size) {
-                                        ax.element.style.width = width + 'px'
-                                        ax.element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
-                                    }
-                                    if (height > minimum_size) {
-                                        ax.element.style.height = height + 'px'
-                                        ax.element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
-                                    }
-                                }
+                        if (resizers[i].classList.contains('bottom-left')) {
+                            const height = original_height + (e.pageY - original_mouse_y)
+                            const width = original_width - (e.pageX - original_mouse_x)
+                            if (height > minimum_size)
+                                ax.element.style.height = height + 'px'
+                            if (width > minimum_size) {
+                                ax.element.style.width = width + 'px'
+                                ax.element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
+                            }
+                        } else
+                        if (resizers[i].classList.contains('top-right')) {
+                            const width = original_width + (e.pageX - original_mouse_x)
+                            const height = original_height - (e.pageY - original_mouse_y)
+                            if (width > minimum_size)
+                                ax.element.style.width = width + 'px'
+                            if (height > minimum_size) {
+                                ax.element.style.height = height + 'px'
+                                ax.element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
+                            }
+                        } else {
+                            const width = original_width - (e.pageX - original_mouse_x)
+                            const height = original_height - (e.pageY - original_mouse_y)
+                            if (width > minimum_size) {
+                                ax.element.style.width = width + 'px'
+                                ax.element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
+                            }
+                            if (height > minimum_size) {
+                                ax.element.style.height = height + 'px'
+                                ax.element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
+                            }
+                        }
                     }
 
                     let stopResize = () => {
@@ -679,7 +688,8 @@ export default (function () {
 
         dialogs.keyEsc[ax.idElement] = arg.esc
 
-        if (arg.titleDisplay) ax.main.appendChild(ax.header)
+        if (arg.titleDisplay)
+            ax.main.appendChild(ax.header)
 
         ax.appendMain()
 
@@ -689,9 +699,11 @@ export default (function () {
 
         ax.setKeyDown(ax.idElement, arg.onKeyDown)
 
-        if (arg.onOpen) ax.eventoOpen[ax.idElement] = arg.onOpen
+        if (arg.onOpen)
+            ax.eventoOpen[ax.idElement] = arg.onOpen
 
-        if (arg.onClose) ax.eventoClose[ax.idElement] = arg.onClose
+        if (arg.onClose)
+            ax.eventoClose[ax.idElement] = arg.onClose
 
         if (arg.titleDisplay)
             if (arg.closeBtn) {
@@ -699,22 +711,27 @@ export default (function () {
                 ax.element.querySelector(".Close" + ax.idElement).addEventListener('click', () => ax.onClose(ax.idElement))
             }
 
-        if (arg.fullScreen) ax.fullScreen();
+        if (arg.fullScreen)
+            ax.fullScreen();
 
-        if (arg.top != '0') ax.element.style.top = `${arg.top}px`
+//        if (arg.top != '0')
+//            ax.element.style.top = `${arg.top}px`
+//
+//        if (arg.left != '0')
+//            ax.element.style.left = `${arg.left}px`
 
-        if (arg.left != '0') ax.element.style.left = `${arg.left}px`
+        if (arg.onCreate)
+            arg.onCreate()
 
-        if (arg.onCreate) arg.onCreate()
-
-        if (arg.execAfter) dialogs.execAfter[ax.idElement] = arg.execAfter;
+        if (arg.execAfter)
+            dialogs.execAfter[ax.idElement] = arg.execAfter;
 
         if (typeof arg.resize == 'object') {
             let [topLeft, topRight, buttonLeft, buttonRight] = arg.resize
             ax.resize(topLeft, topRight, buttonLeft, buttonRight)
         } else
-            if (arg.resize)
-                ax.resize(true, true, true, true)
+        if (arg.resize)
+            ax.resize(true, true, true, true)
 
         this.btnFocus = (nameBtn) => ax.btnsFooter[nameBtn].focus()
 
@@ -761,7 +778,9 @@ export default (function () {
         dialogs: dialogs,
         countIsOpen: countIsOpen,
         setCss: setCss,
-        setTheme: (_theme) => { defaultTheme = _theme },
+        setTheme: (_theme) => {
+            defaultTheme = _theme
+        },
         changeTheme: changeTheme,
         setBlur: setBlur
     }
