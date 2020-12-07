@@ -1,14 +1,14 @@
 {
-  "name": "xgridv2",
-  "version": "2.0.0",
+  "name": "xmodalv2",
+  "version": "2.0.3",
   "description": "<p>Modal com diversas funcionalidades, onClose, onOpen, isOpen, control Esc</p>",
-  "main": "xGridV2.js",
+  "main": "index.js",
   "directories": {
     "example": "examples"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dffrancisco/xGridV2.git"
+    "url": "git+https://github.com/dffrancisco/xModal.git"
   },
   "keywords": [
     "modal"
