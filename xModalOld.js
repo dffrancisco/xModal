@@ -1,4 +1,6 @@
+
 //export default (function () {
+
 
 let xModal = (function () {
     const btnProperty = {
@@ -30,7 +32,6 @@ let xModal = (function () {
     let timeExecAfter = {};
     let dialogs = {
         dialogsOpen: {},
-        onClose: {},
         execAfter: {},
         keyEsc: {},
         onKeyDown: {}
@@ -75,13 +76,6 @@ let xModal = (function () {
 
                 if (e.keyCode === 27) {
                     if (dialogs.keyEsc[id]) {
-
-                        // onClose(id)
-
-                        console.log(dialogs.onClose[id], id, dialogs.onClose);
-
-                        if (dialogs.onClose[id])
-                            dialogs.onClose[id]()
 
                         if (document.getElementById(id + '_Modal'))
                             document.getElementById(id + '_Modal').remove()
@@ -338,7 +332,8 @@ let xModal = (function () {
             titleDisplay: true,
             onKeyDown: {},
             top: '',
-            left: ''
+            left: '',
+            hashMofoModal: false,
             // classForOpen: false,
             // classForClose: false,
         };
@@ -378,6 +373,12 @@ let xModal = (function () {
                 this.main.setAttribute('modal', arg.modal)
 
 
+                if (arg.top.toString() != '')
+                    this.main.style.top = `${(arg.height / 2 - 4) + arg.top}px`
+
+                if (arg.left.toString() != '')
+                    this.main.style.left = `${(arg.width / 2) + arg.left}px`
+
                 // if (arg.top.toString() != '')
                 //     this.main.style.top = `${arg.top}px`
                 // else
@@ -415,6 +416,23 @@ let xModal = (function () {
                 // }
                 // if (arg.classForOpen) arg.classForOpen = arg.classForOpen.split(' ');
                 // if (arg.classForClose) arg.classForClose = arg.classForClose.split(' ');
+
+
+                if (arg.hash)
+                    window.addEventListener("hashchange", (e) => {
+                        //   console.log('aaa', arg.hashMofoModal, e);
+                        let oldURL = e.oldURL.split('#')[1].replace('/', '')
+                        //  console.log(ax.idElement, id);
+                        if (arg.hashMofoModal) {
+                            try {
+                                if (ax.idElement == oldURL) {
+                                    ax.onClose(oldURL)
+                                }
+                            } catch (e) { console.log(e); }
+                        } else
+                            arg.hashMofoModal = true;
+                    });
+
 
             },
             appendMain() {
@@ -475,19 +493,29 @@ let xModal = (function () {
                 //     arg.classForOpen.map(ln => this.element.classList.remove(ln))
                 //     arg.classForClose.map(ln => this.element.classList.add(ln))
                 // } else
+
+
+                if (arg.hash) {
+                    window.location.hash = "";
+                    arg.hashMofoModal = false;
+                }
+
+
                 this.main.classList.add('this-close')
                 setTimeout(() => {
                     this.element.style.display = 'none'
                     this.main.classList.remove('this-close')
 
-
-                    if (arg.modal)
-                        document.getElementById(this.idElement + '_Modal').remove()
+                    try {
+                        if (arg.modal)
+                            document.getElementById(this.idElement + '_Modal').remove()
+                    } catch (error) {
+                        console.log(error)
+                    }
 
 
                     if (this.eventoClose[id])
                         this.eventoClose[id]()
-
 
                     if (dialogs.execAfter[id])
                         execAfterStop(id);
@@ -496,6 +524,7 @@ let xModal = (function () {
                     if (Object.keys(dialogs.dialogsOpen).length === 0) {
                         document.body.style.overflow = ''
                     }
+
                 }, 100);
             },
             onOpen() {
@@ -535,6 +564,12 @@ let xModal = (function () {
 
                     if (this.idElement in dialogs.execAfter)
                         execAfterFunc(this.btnsFooter, this.idElement)
+
+                    if (arg.hash) {
+                        arg.hashMofoModal = false;
+                        window.location.hash = this.idElement;
+                    }
+
                 }
             },
             fullScreen() {
@@ -545,7 +580,6 @@ let xModal = (function () {
                 this.element.style.borderRadius = 0
                 this.element.style.maxHeight = 'none'
                 this.element.style.maxWidth = 'none'
-                this.element.style.transform = 'none'
             },
             destroy() {
 
@@ -560,8 +594,7 @@ let xModal = (function () {
                 this.element.style.display = 'none'
 
                 this.element.querySelector('.xModal-modal-head').remove()
-                if (this.element.querySelector('.xModal-modal-foot'))
-                    this.element.querySelector('.xModal-modal-foot').remove()
+                this.element.querySelector('.xModal-modal-foot').remove()
                 this.element.querySelector('.xModal-modal-content').removeAttribute('class')
                 // if (arg.modal) {
                 //     // console.log(this.idElement);
@@ -702,10 +735,7 @@ let xModal = (function () {
 
         if (arg.onOpen) ax.eventoOpen[ax.idElement] = arg.onOpen
 
-        if (arg.onClose) {
-            ax.eventoClose[ax.idElement] = arg.onClose
-            dialogs.onClose[ax.idElement] = arg.onClose
-        }
+        if (arg.onClose) ax.eventoClose[ax.idElement] = arg.onClose
 
         if (arg.titleDisplay)
             if (arg.closeBtn) {
