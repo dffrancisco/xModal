@@ -1,6 +1,6 @@
 {
   "name": "xmodalv2",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "description": "Modal em JavaScript puro, sem dependências de runtime: botões, onOpen/onClose, atalhos de teclado, Esc, temas e redimensionamento.",
   "main": "xModal/xModal.mjs",
   "module": "xModal/xModal.mjs",
