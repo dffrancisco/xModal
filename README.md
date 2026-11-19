@@ -1,4 +1,4 @@
-# xModal v2.0.0
+# xModal v3
 
 O xModal é uma janela de diálogo personalizada inspirada inicialmente no showModal do Delphi.
 Ele usa nativamente javascript em sua construção.
@@ -13,38 +13,46 @@ Ele usa nativamente javascript em sua construção.
 
 ## Instalação
 
+```bash
+npm install xmodalv2
+```
+
+A partir da v3 o pacote é ESM (`import`). Quem usava a v2 com `require('xmodalv2')` deve continuar na `^2.0.1`.
 
 ## Importando
 
-<h3>Forma 1</h3>
-
-Em seu html declare o css:
-
-```html
-<link rel="stylesheet" href="./xModal.css" />
-```
-
-Para usar o xModal você deve chamá-lo em seu arquivo .js através de import.
+<h3>Com bundler (Vite, webpack...)</h3>
 
 ```javascript
-import xModal from './xModal';
+import xModal, { iModal, iModalCreate } from "xmodalv2";
 ```
 
-<h3>Forma 2</h3>
+E o CSS, uma vez no app (no `<style>` de um componente ou num `.css`):
 
-Em seu html declare o arquivo js.
+```css
+@import "xmodalv2/index.css";
+```
+
+<h3>Direto no html</h3>
 
 ```html
-<link rel="stylesheet" href="./xModal.css" />
-<script src="./xModal.js"></script>
+<link rel="stylesheet" href="node_modules/xmodalv2/xModal/index.css" />
+<script src="node_modules/xmodalv2/xModal/xModal.js"></script>
+<!-- expõe o global xModal -->
 ```
 
-É necessário comentar/descomentar as linhas no arquivo xModal.js:
+## Desenvolvimento
 
-```javascript
-    export default (function() { //comentar essa linha
-    let xModal = (function() { // descomentar essa linha
+```bash
+npm install
+npm test            # testes (vitest + jsdom)
+npm run typecheck   # tsc
+npm run dev         # build em modo watch
+npm run build       # sobe a versão (patch) e gera xModal/
 ```
+
+O código fica em `index.ts` e `index.css`; `scripts/build.js` gera em `xModal/` o ESM (`xModal.mjs`), o
+IIFE para `<script>` (`xModal.js`), os tipos (`index.d.ts`), o CSS e as imagens que ele usa.
 
 ## Modo de Uso
 
@@ -94,6 +102,13 @@ minhaDiv.open();
         <td><img src="images/xModal-bublue.png"></td>
     </tr>
 </table>
+
+Também disponíveis: `xModal-v23`, `xModal-xAtila`, `xModal-xAtila-dark` e `xModal-Vyzo`.
+O `xModal-Vyzo` usa as variáveis `--matdash-*`, `--bg-card` e `--v-theme-primary` quando a página
+as define; sem elas, usa valores padrão (claro e, com `html.dark`, escuro).
+
+Para todos os modais: `xModal.setTheme("xModal-Vyzo")` antes de criar, ou `xModal.changeTheme(...)`
+para trocar os que já existem.
 
 ## Parâmetro Create
 
