@@ -60,6 +60,48 @@ var xModal = (() => {
     function countIsOpen() {
       return Object.keys(dialogs.dialogsOpen).length;
     }
+    let instancias = [];
+    const morta = (inst) => !inst.ax.main.isConnected || inst.ax.content.parentNode !== inst.ax.main;
+    function buscarRaiz(id) {
+      const el = id ? document.getElementById(id) : null;
+      return el && !el.classList.contains("xModal-modal-main") ? el : null;
+    }
+    function descartar(inst, devolver = false) {
+      var _a;
+      const ax = inst.ax;
+      const id = ax.idElement;
+      const estado = { aberto: id in dialogs.dialogsOpen, dados: ax.dataOpen };
+      ax.disposed = true;
+      ax.observer.disconnect();
+      instancias = instancias.filter((i) => i !== inst);
+      if (estado.aberto && timeExecAfter[id]) execAfterStop(id);
+      delete dialogs.dialogsOpen[id];
+      delete dialogs.onClose[id];
+      delete dialogs.execAfter[id];
+      delete dialogs.keyEsc[id];
+      delete dialogs.onKeyDown[id];
+      (_a = document.getElementById(id + "_Modal")) == null ? void 0 : _a.remove();
+      if (devolver && ax.content.parentNode === ax.main) {
+        const raiz = ax.content;
+        ax.main.before(raiz);
+        raiz.id = id;
+        raiz.classList.remove("xModal-modal-content");
+        raiz.style.borderBottomLeftRadius = "";
+        raiz.style.borderBottomRightRadius = "";
+        if (ax.titleAttr) raiz.setAttribute("title", ax.titleAttr);
+      }
+      ax.main.remove();
+      if (countIsOpen() === 0) document.querySelector("html").style.overflow = "";
+      return estado;
+    }
+    function religar(inst, reabrir = true) {
+      const estado = descartar(inst);
+      const raiz = buscarRaiz(inst.ax.idElement);
+      if (!raiz) return;
+      montar(inst, raiz);
+      if (reabrir && estado.aberto) inst.ax.onOpen(estado.dados);
+    }
+    const emHmr = () => typeof globalThis.__VUE_HMR_RUNTIME__ !== "undefined";
     function execAfterFunc(buttons, id) {
       let exec = dialogs.execAfter[id];
       let text = buttons[exec.btn].innerText;
@@ -252,6 +294,29 @@ var xModal = (() => {
         });
     }
     function create(params) {
+      validarParams(void 0, params);
+      const alvoId = params.el[0] === "#" ? params.el.slice(1) : null;
+      let anterior = { aberto: false, dados: void 0 };
+      const reabrir = emHmr();
+      for (const inst2 of instancias.filter(morta)) {
+        if (inst2.ax.idElement !== alvoId) religar(inst2, reabrir);
+        else {
+          anterior = descartar(inst2);
+          if (!reabrir) anterior.aberto = false;
+        }
+      }
+      let raiz = document.querySelector(params.el);
+      const viva = raiz && instancias.find((i) => i.ax.main === raiz || i.ax.content === raiz);
+      if (viva) {
+        anterior = descartar(viva, true);
+        raiz = viva.ax.content;
+      }
+      const inst = { api: this, params, ax: null };
+      montar(inst, raiz);
+      if (anterior.aberto) inst.ax.onOpen(anterior.dados);
+    }
+    function montar(inst, raiz) {
+      const params = inst.params;
       const argDefault = {
         el: "",
         title: "&nbspMensagem do Sistema",
@@ -275,7 +340,6 @@ var xModal = (() => {
         // classForOpen: false,
         // classForClose: false,
       };
-      validarParams(argDefault, params);
       let arg = Object.assign(argDefault, params);
       let ax = {
         header: "",
@@ -283,20 +347,26 @@ var xModal = (() => {
         textHeader: "",
         btnClose: "",
         element: "",
+        content: "",
         main: "",
         idElement: "",
         eventoOpen: {},
         eventoClose: {},
         btnsFooter: {},
         dataOpen: "",
-        setMain(arg2) {
-          this.element = document.querySelector(arg2.el);
+        titleAttr: "",
+        observer: null,
+        disposed: false,
+        setMain(arg2, raiz2) {
+          this.element = raiz2;
+          this.content = raiz2;
           let id = this.element.id;
           this.element.classList.add("xModal-modal-content");
           this.element.removeAttribute("id");
           this.element.style.display = "";
           if (this.element.getAttribute("title")) {
             arg2.title = this.element.getAttribute("title");
+            this.titleAttr = arg2.title;
             this.element.removeAttribute("title");
           }
           this.main = document.createElement("div");
@@ -367,6 +437,7 @@ var xModal = (() => {
           this.main.classList.add("this-close");
           setTimeout(() => {
             var _a;
+            if (this.disposed) return;
             this.element.style.display = "none";
             this.main.classList.remove("this-close");
             if (arg.modal)
@@ -418,6 +489,9 @@ var xModal = (() => {
           this.element.style.transform = "none";
         },
         destroy() {
+          this.disposed = true;
+          this.observer.disconnect();
+          instancias = instancias.filter((i) => i !== inst);
           delete this.eventoClose[this.idElement];
           delete this.eventoOpen[this.idElement];
           delete dialogs.onKeyDown[this.idElement];
@@ -529,7 +603,7 @@ var xModal = (() => {
           }
         }
       };
-      ax.setMain(arg);
+      ax.setMain(arg, raiz);
       ax.setHeader();
       ax.setTextHeader(arg.title);
       ax.setBtnClose();
@@ -560,16 +634,36 @@ var xModal = (() => {
         let [topLeft, topRight, buttonLeft, buttonRight] = arg.resize;
         ax.resize(topLeft, topRight, buttonLeft, buttonRight);
       } else if (arg.resize) ax.resize(true, true, true, true);
-      this.btnFocus = (nameBtn) => ax.btnsFooter[nameBtn].focus();
-      this.btnDisable = (nameBtn) => ax.btnsFooter[nameBtn].disabled = true;
-      this.btnEnable = (nameBtn) => ax.btnsFooter[nameBtn].disabled = false;
-      this.btnClick = (nameBtn) => ax.btnsFooter[nameBtn].click();
-      this.setTitle = (title) => ax.textHeader.innerHTML = title;
-      this.btnFooter = (nameBtn) => ax.btnsFooter[nameBtn];
-      this.destroy = () => ax.destroy();
-      this.open = (data) => ax.onOpen(data);
-      this.close = () => ax.onClose(ax.idElement);
+      const api = inst.api;
+      api.btnFocus = (nameBtn) => ax.btnsFooter[nameBtn].focus();
+      api.btnDisable = (nameBtn) => ax.btnsFooter[nameBtn].disabled = true;
+      api.btnEnable = (nameBtn) => ax.btnsFooter[nameBtn].disabled = false;
+      api.btnClick = (nameBtn) => ax.btnsFooter[nameBtn].click();
+      api.setTitle = (title) => ax.textHeader.innerHTML = title;
+      api.btnFooter = (nameBtn) => ax.btnsFooter[nameBtn];
+      api.destroy = () => ax.destroy();
+      api.open = (data) => {
+        if (morta(inst)) {
+          if (!inst.ax.disposed) descartar(inst);
+          const nova = buscarRaiz(inst.ax.idElement);
+          if (!nova) return;
+          montar(inst, nova);
+        }
+        inst.ax.onOpen(data);
+      };
+      api.close = () => ax.onClose(ax.idElement);
       dragEl(ax.element);
+      ax.observer = new MutationObserver(() => {
+        if (ax.disposed) return;
+        if (morta(inst)) return religar(inst);
+        if (ax.content.style.display === "none") ax.content.style.display = "";
+        if (!ax.content.classList.contains("xModal-modal-content"))
+          ax.content.classList.add("xModal-modal-content");
+      });
+      ax.observer.observe(ax.main, { childList: true });
+      ax.observer.observe(ax.content, { attributes: true, attributeFilter: ["style", "class"] });
+      inst.ax = ax;
+      instancias.push(inst);
     }
     function changeTheme(_theme) {
       defaultTheme = _theme;
