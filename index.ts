@@ -100,6 +100,69 @@ export default (function () {
     return Object.keys(dialogs.dialogsOpen).length;
   }
 
+  // O xModal move a raiz informada em `el` para dentro de um wrapper dele. Quando essa raiz é de um
+  // componente Vue, o Vue continua mexendo nela: no HMR de template reaplica os atributos estáticos
+  // (style="display: none" esconde o conteúdo), e no HMR de script, v-if ou troca de rota desmonta a raiz
+  // e às vezes monta outra com o mesmo id. Cada instância vigia a sua raiz e, se ela sair do wrapper,
+  // desfaz o modal e o refaz em volta da raiz nova, reabrindo se estava aberto.
+  type Instancia = { api: any; params: iModal; ax: any };
+  let instancias: Instancia[] = [];
+
+  const morta = (inst: Instancia) =>
+    !inst.ax.main.isConnected || inst.ax.content.parentNode !== inst.ax.main;
+
+  // raiz montada com o id do modal que ainda não foi embrulhada por outro xModal
+  function buscarRaiz(id: string) {
+    const el = id ? document.getElementById(id) : null;
+    return el && !el.classList.contains("xModal-modal-main") ? el : null;
+  }
+
+  // Tira o wrapper e o fundo do documento e limpa os registros do id. Com `devolver`, a raiz volta para o
+  // lugar do wrapper como estava antes do create.
+  function descartar(inst: Instancia, devolver = false) {
+    const ax = inst.ax;
+    const id = ax.idElement;
+    const estado = { aberto: id in dialogs.dialogsOpen, dados: ax.dataOpen };
+
+    ax.disposed = true;
+    ax.observer.disconnect();
+    instancias = instancias.filter((i) => i !== inst);
+
+    if (estado.aberto && timeExecAfter[id]) execAfterStop(id);
+    delete dialogs.dialogsOpen[id];
+    delete dialogs.onClose[id];
+    delete dialogs.execAfter[id];
+    delete dialogs.keyEsc[id];
+    delete dialogs.onKeyDown[id];
+    document.getElementById(id + "_Modal")?.remove();
+
+    if (devolver && ax.content.parentNode === ax.main) {
+      const raiz = ax.content;
+      ax.main.before(raiz);
+      raiz.id = id;
+      raiz.classList.remove("xModal-modal-content");
+      raiz.style.borderBottomLeftRadius = "";
+      raiz.style.borderBottomRightRadius = "";
+      if (ax.titleAttr) raiz.setAttribute("title", ax.titleAttr);
+    }
+    ax.main.remove();
+
+    if (countIsOpen() === 0) document.querySelector("html").style.overflow = "";
+    return estado;
+  }
+
+  function religar(inst: Instancia, reabrir = true) {
+    const estado = descartar(inst);
+    const raiz = buscarRaiz(inst.ax.idElement);
+    if (!raiz) return;
+    montar(inst, raiz);
+    if (reabrir && estado.aberto) inst.ax.onOpen(estado.dados);
+  }
+
+  // Só existe no Vue de desenvolvimento. Um modal morto achado num create posterior só reabre sozinho no HMR:
+  // em produção isso é a tela que saiu com o modal aberto e voltou depois, e ele não deve pular na cara.
+  const emHmr = () => typeof (<any>globalThis).__VUE_HMR_RUNTIME__ !== "undefined";
+
   function execAfterFunc(buttons, id) {
     let exec = dialogs.execAfter[id];
     let text = buttons[exec.btn].innerText;
@@ -393,6 +456,36 @@ export default (function () {
   }
 
   function create(params: iModal) {
+    validarParams(undefined, params);
+
+    // Wrapper cuja raiz o Vue tirou continua no documento com o id e seria achado pelo querySelector:
+    // descarta antes. O do mesmo id deste create só é descartado (o modal novo sai daqui); os outros se religam.
+    const alvoId = params.el[0] === "#" ? params.el.slice(1) : null;
+    let anterior = { aberto: false, dados: undefined };
+    const reabrir = emHmr();
+    for (const inst of instancias.filter(morta)) {
+      if (inst.ax.idElement !== alvoId) religar(inst, reabrir);
+      else {
+        anterior = descartar(inst);
+        if (!reabrir) anterior.aberto = false;
+      }
+    }
+
+    let raiz = document.querySelector(params.el);
+    // create de novo num modal que já existe: devolve a raiz e monta outra vez, sem embrulhar o wrapper
+    const viva = raiz && instancias.find((i) => i.ax.main === raiz || i.ax.content === raiz);
+    if (viva) {
+      anterior = descartar(viva, true);
+      raiz = viva.ax.content;
+    }
+
+    const inst: Instancia = { api: this, params, ax: null };
+    montar(inst, raiz);
+    if (anterior.aberto) inst.ax.onOpen(anterior.dados);
+  }
+
+  function montar(inst: Instancia, raiz: Element) {
+    const params = inst.params;
     const argDefault = {
       el: "",
       title: "&nbspMensagem do Sistema",
@@ -417,8 +510,6 @@ export default (function () {
       // classForClose: false,
     };
 
-    validarParams(argDefault, params);
-
     let arg = Object.assign(argDefault, params);
 
     let ax = {
@@ -427,15 +518,19 @@ export default (function () {
       textHeader: <any>"",
       btnClose: "",
       element: <any>"",
+      content: <any>"",
       main: <any>"",
       idElement: "",
       eventoOpen: {},
       eventoClose: {},
       btnsFooter: {},
       dataOpen: <any>'',
-      setMain(arg) {
-        this.element = document.querySelector(arg.el);
-        // console.log(this.element);
+      titleAttr: "",
+      observer: <MutationObserver>null,
+      disposed: false,
+      setMain(arg, raiz) {
+        this.element = raiz;
+        this.content = raiz;
         let id = this.element.id;
         this.element.classList.add("xModal-modal-content");
         this.element.removeAttribute("id");
@@ -443,6 +538,7 @@ export default (function () {
 
         if (this.element.getAttribute('title')) {
           arg.title = this.element.getAttribute('title');
+          this.titleAttr = arg.title;
           this.element.removeAttribute('title')
         }
 
@@ -526,6 +622,8 @@ export default (function () {
         this.main.classList.add("this-close");
 
         setTimeout(() => {
+          // descartado no meio da animação: o id pode já ser de outro modal
+          if (this.disposed) return;
           this.element.style.display = "none";
           this.main.classList.remove("this-close");
 
@@ -600,6 +698,10 @@ export default (function () {
       },
 
       destroy() {
+        this.disposed = true;
+        this.observer.disconnect();
+        instancias = instancias.filter((i) => i !== inst);
+
         delete this.eventoClose[this.idElement];
         delete this.eventoOpen[this.idElement];
         delete dialogs.onKeyDown[this.idElement];
@@ -758,7 +860,7 @@ export default (function () {
       },
     };
 
-    ax.setMain(arg);
+    ax.setMain(arg, raiz);
     ax.setHeader();
     ax.setTextHeader(arg.title);
     ax.setBtnClose();
@@ -810,25 +912,51 @@ export default (function () {
       ax.resize(topLeft, topRight, buttonLeft, buttonRight);
     } else if (arg.resize) ax.resize(true, true, true, true);
 
-    this.btnFocus = (nameBtn) => ax.btnsFooter[nameBtn].focus();
+    // reatribuídos a cada montagem: a instância que o código guardou passa a mexer no modal novo
+    const api = inst.api;
 
-    this.btnDisable = (nameBtn) => (ax.btnsFooter[nameBtn].disabled = true);
+    api.btnFocus = (nameBtn) => ax.btnsFooter[nameBtn].focus();
 
-    this.btnEnable = (nameBtn) => (ax.btnsFooter[nameBtn].disabled = false);
+    api.btnDisable = (nameBtn) => (ax.btnsFooter[nameBtn].disabled = true);
 
-    this.btnClick = (nameBtn) => ax.btnsFooter[nameBtn].click();
+    api.btnEnable = (nameBtn) => (ax.btnsFooter[nameBtn].disabled = false);
 
-    this.setTitle = (title) => (ax.textHeader.innerHTML = title);
+    api.btnClick = (nameBtn) => ax.btnsFooter[nameBtn].click();
 
-    this.btnFooter = (nameBtn) => ax.btnsFooter[nameBtn];
+    api.setTitle = (title) => (ax.textHeader.innerHTML = title);
 
-    this.destroy = () => ax.destroy();
+    api.btnFooter = (nameBtn) => ax.btnsFooter[nameBtn];
 
-    this.open = (data) => ax.onOpen(data);
+    api.destroy = () => ax.destroy();
 
-    this.close = () => ax.onClose(ax.idElement);
+    api.open = (data) => {
+      // a raiz saiu do documento (pai remontado, troca de rota): usa a que estiver com o id agora
+      if (morta(inst)) {
+        if (!inst.ax.disposed) descartar(inst);
+        const nova = buscarRaiz(inst.ax.idElement);
+        if (!nova) return;
+        montar(inst, nova);
+      }
+      inst.ax.onOpen(data);
+    };
+
+    api.close = () => ax.onClose(ax.idElement);
 
     dragEl(ax.element);
+
+    ax.observer = new MutationObserver(() => {
+      if (ax.disposed) return;
+      if (morta(inst)) return religar(inst);
+      // rerender do Vue reaplicando os atributos estáticos da raiz
+      if (ax.content.style.display === "none") ax.content.style.display = "";
+      if (!ax.content.classList.contains("xModal-modal-content"))
+        ax.content.classList.add("xModal-modal-content");
+    });
+    ax.observer.observe(ax.main, { childList: true });
+    ax.observer.observe(ax.content, { attributes: true, attributeFilter: ["style", "class"] });
+
+    inst.ax = ax;
+    instancias.push(inst);
   }
 
   function changeTheme(_theme) {
