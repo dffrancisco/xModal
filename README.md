@@ -6,6 +6,7 @@ Ele usa nativamente javascript em sua construção.
 [Instalação](#instalação)<br>
 [Importando](#importando)<br>
 [Modo de Uso](#modo-de-uso)<br>
+[Com Vue](#com-vue)<br>
 [Temas](#temas)<br>
 [Parâmetro Create](#parâmetro-create)<br>
 [Métodos](#métodos)<br>
@@ -83,6 +84,47 @@ const minhaDiv = new xModal.create({
 //// Abre o modal
 minhaDiv.open();
 ```
+
+## Com Vue
+
+O elemento do modal costuma ser a raiz de um componente, escondida até o xModal assumir:
+
+```vue
+<script setup lang="ts">
+import { onMounted } from "vue";
+import xModal, { iModalCreate } from "xmodalv2";
+
+let modal: iModalCreate;
+onMounted(() => {
+  modal = new xModal.create({ el: "#minhaDiv", title: "Meu modal" });
+});
+</script>
+
+<template>
+  <div id="minhaDiv" style="display: none">Hello World!</div>
+</template>
+```
+
+O xModal move esse elemento para dentro de uma janela criada por ele e passa o `id` para a janela.
+A partir da v3.0.2 ele acompanha o que o Vue faz com o elemento:
+
+- **Edição do template (HMR):** o modal aberto continua aberto e mostra o conteúdo novo.
+- **Edição do script ou de um `.ts` importado (HMR):** o Vue monta outra raiz com o mesmo `id`; o xModal
+  refaz a janela em volta dela com as mesmas opções e, se estava aberta, reabre com os mesmos dados.
+  A instância que o código guardou continua valendo.
+- **`v-if` ou troca de rota:** quando a raiz sai da página, a janela, o fundo e o registro de "aberto" saem
+  junto. Se a raiz voltar, o próximo `open()` da instância guardada usa a raiz nova.
+- **`create` repetido no mesmo elemento:** substitui o modal anterior.
+
+Pontos de atenção:
+
+- A raiz nova é reconhecida pelo `id`; um modal criado por classe num elemento sem `id` não é religado.
+- Quando a janela é refeita, `onCreate` roda de novo, e `onOpen` também se ela reabrir.
+- `v-show` na raiz do modal não esconde o conteúdo: o xModal desfaz o `display: none` dela. Para esconder,
+  use `close()`.
+- Fora do HMR, um modal que ficou aberto numa tela que saiu não reabre sozinho quando a tela volta.
+- Editar o template do componente pai inserindo um elemento logo antes do componente do modal ainda pede
+  recarregar a página.
 
 ## Temas
 
@@ -202,13 +244,13 @@ Create é responsável por instanciar o xModal. Recebe um objeto como parâmetro
     </tr>
     <tr>
         <td>onCreate</td>
-        <td>Função que será executada ao instanciar o objeto, só executa uma vez.</td>
+        <td>Função que será executada ao instanciar o objeto. Roda de novo se a janela for refeita (veja <a href="#com-vue">Com Vue</a>).</td>
         <td align="center">Function</td>
         <td align="center"></td>
     </tr>
     <tr>
         <td>onOpen</td>
-        <td>Função que será executada sempre que abrir a janela.</td>
+        <td>Função que será executada sempre que abrir a janela. Recebe o valor passado em <code>open(dados)</code>.</td>
         <td align="center">Function</td>
         <td align="center"></td>
     </tr>
@@ -319,8 +361,8 @@ minhaDiv.close();
     </tr>
     <tr>
         <td>open</td>
-        <td align="center">nenhum</td>
-        <td>Abre a janela de diálogo.</td>
+        <td align="center">dados: any (opcional)</td>
+        <td>Abre a janela de diálogo. O valor é repassado ao <code>onOpen</code>.</td>
     </tr>
     <tr>
         <td>close</td>
