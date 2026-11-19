@@ -378,5 +378,4 @@ minhaDiv.close();
 
 ## Desenvolvedores
 
-[Francisco Alves](https://github.com/dffrancisco)<br>
-[Guilherme Trindade](https://github.com/guigagb)
+[Francisco Alves](https://github.com/dffrancisco)
